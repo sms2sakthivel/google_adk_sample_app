@@ -248,8 +248,14 @@ func toADKResponse(resp openai.ChatCompletionResponse) (*model.LLMResponse, erro
 	choice := resp.Choices[0]
 	var parts []*genai.Part
 
+	// If we have tool calls, suppress the text content which is often hallucinated/premature.
+	// Only add text if NO tool calls are present.
 	if choice.Message.Content != "" {
-		parts = append(parts, &genai.Part{Text: choice.Message.Content})
+		if len(choice.Message.ToolCalls) == 0 {
+			parts = append(parts, &genai.Part{Text: choice.Message.Content})
+		} else {
+			log.Printf("[Ollama] Suppressing text content mixed with tool calls: %q", choice.Message.Content)
+		}
 	}
 
 	for _, tc := range choice.Message.ToolCalls {
