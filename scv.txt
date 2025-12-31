@@ -1,0 +1,1149 @@
+Introduction
+Important notice
+As Dell Technologies continually updates and improves its products, some features and functions described in this user guide may not be available or may have changed in its newer software and hardware versions. For the most accurate and up-to-date information about product features, see the product release notes. If you have any issues with a product or if it does not function as described, contact your Dell Technologies Technical Support representative for assistance.
+Introduction to the SCV application User Guide
+This guide is designed to help you get started with the SCV application, it covers the essential steps for installing, running, and troubleshooting the application, as well as providing a comprehensive overview of its features and functions. The objectives of this document are to:
+* Introduce the SCV application and its key components.
+* Provide a pre-deployment checklist to ensure a smooth setup process.
+* Describe the application features and capabilities.
+* Offer step-by-step instructions for installing and using the licensed SCV application.
+* Provide troubleshooting guidelines and recommendations for common issues.
+Intended audience and scope
+This User Guide is designed to support system administrators, IT professionals, and Dell customers who need to verify the authenticity of server components using the SCV application. The guide provides step-by-step instructions for installing and using SCV, and detailed information about its features and functions.
+The guide is updated and maintained with each new release of SCV, ensuring that you have access to the most current information and instructions. Where new features are introduced, the minimum required version of SCV is noted to ensure compatibility and optimal performance.
+Additional documentation
+For more information about specific SCV versions, see the Release Notes, which is available with other SCV documents at the Secured Component Verification location. The Release Notes provide detailed information about new features, issue fixes, and known issues for each SCV version, and can be a valuable resource for troubleshooting and optimal use of the application.
+Contacting Dell
+For sales, technical support, or customer service inquiries, Dell offers a range of support options, including online chat, email, and phone support. To find the contact information relevant to your needs, go to the Contact Dell page. Availability of support options may vary depending on your country or region, region, or product.
+If you do not have an active Internet connection, you can also find Dell contact information about your purchase invoice, packing slip, bill, or Dell product catalog.
+
+SCV overview
+This chapter provides an understanding of Secured Component Verification, how it is delivered, SCV features, and how it is used.Secured Component Verification
+The Secured Component Verification (SCV) process is designed to ensure the authenticity and integrity of Dell products by enabling end users to perform acceptance tests and verify that their systems match their original factory configuration. This is achieved through a unique certificate, generated during factory assembly, which contains system component IDs that are used for validation.
+The SCV application uses this certificate to validate the current system inventory and generate a detailed validation report, highlighting any matches or mismatches. Also, the SCV application performs rigorous cryptographic validations to verify the genuineness of the server, including:
+* Platform certificate signature validation
+* Root of Trust validation
+* Possession of the private key validation
+The SCV application generates a validation report detailing the inventory matches and mismatches against the SCV certificate. It also verifies the certificate and Chain of Trust along with the Proof of Possession of the SCV Private key.SCV process overview
+The SCV process ensures the authenticity and integrity of server components through the following six key stages:
+Figure 1. SCV process overview. Diagram illustrating the Secure Component Verification (SCV) process, showcasing the various stages and steps involved in verifying the security of components.
+￼
+Table 1. SCV process overview
+STAGE	DESCRIPTION
+Order	The customer places an order for a server.
+Build	The order is received at the Dell Technologies factory, where the server is
+              manufactured.
+Collect	Component and firmware data are gathered during the build process.
+Store	Certificates are signed using a Hardware Security Module (HSM), encrypted, and
+              securely stored in the server iDRAC crypto vault.
+Deliver	The completed server is shipped to the customer.
+Validate	After delivery, the customer verifies the authenticity of the server components
+              using the stored cryptographic certificate data.
+
+Features of SCV
+* Firmware certificate feature is available starting from SCV version 2.1.0 and later, firmware certificates provide an added layer of security, verifying the authenticity and integrity of the firmware.
+* SCV supports both in-band and out-of-band modes for flexible deployment. In-band certificate extraction requires root or sudo access, while out-of-band methods work without elevated privileges, enabling easier integration in restricted environments.
+* The support for Trusted Platform Module (TPM) version 2.0 indicates that SCV can leverage the advanced security features that are provided by TPM 2.0.Key guidelines and recommendations
+* To ensure smooth operation and accurate validation using the Secured Component Verification (SCV) application, follow these essential guidelines:
+* Table 1. Quick Reference Table
+*           
+*             
+* REQUIREMENT / ACTION
+*             
+* DETAILS / NOTES
+*           
+*         
+*           
+*             
+* License Requirement
+*             
+* Purchase an SCV license for each server at the time of order.
+*           
+*           
+*             
+* Initial Testing
+*             
+* Run the acceptance test during server delivery. No hardware or firmware changes
+*               allowed before this test.
+*           
+*           
+*             
+* Hardware/Firmware Changes
+*             
+* Avoid changes before acceptance testing. If changes were made, revert them before
+*               running SCV.
+*           
+*           
+*             
+* TPM Requirement
+*             
+* TPM must be enabled. Only TPM 2.0 is supported.
+*           
+*           
+*             
+* iDRAC USB Ports
+*             
+* All internal/external iDRAC USB ports must be enabled.
+*           
+*           
+*             
+* Drive Status in iDRAC
+*             
+* Do not remove drives from iDRAC before SCV validation.
+*           
+*           
+*             
+* FlexAddress (Modular Systems)
+*             
+* Must be disabled before running SCV.
+*           
+*           
+*             
+* RAID Disk Changes
+*             
+* Removed physical disks stay in inventory until iDRAC/host reboot. This affects
+*               SCV results.
+*           
+*           
+*             
+* Virtual Network Ports
+*             
+* Run SCV before enabling NPAR/NPAReP cards.
+*           
+*           
+*             
+* Firmware Upgrade Impact
+*             
+* iDRAC v7.10.90.00 may show PCIe mismatches (e.g., GPU) if enforce order is
+*               applied.
+*           
+*           
+*             
+* In-Band Communication
+*             
+* Manually enable USB-NIC adapter from OS. Disabled OS or USB ports will cause SCV
+*               failure.
+*           
+*           
+*             
+* Component Mismatches
+*             
+* Adding/removing hardware shows up in Mismatch Inventory Summary.
+*           
+*           
+*             
+* GPU Removal
+*             
+* May show “Unknown” in mismatch summary.
+*           
+*           
+*             
+* Unknown Values in Reports
+*             
+* These indicate missing hardware properties, not security issues. Safe to
+*               ignore.
+*           
+*           
+*             
+* SCV Version Compatibility
+*             
+* SCV v1.93.0+ does not support SCV 1.0 or legacy certificates.
+*           
+*           
+*             
+* Launching SCV
+*             
+* Use iDRAC UI (v7.10.30.00+) or downloadable SCV app for full
+*               functionality.
+*           
+*           
+*             
+* Firmware Version Best Practice
+*             
+* Use iDRAC firmware within 4 releases of the max supported version for your SCV
+*               release.
+*           
+*         
+* Pre-Validation check list
+* Before running the SCV application:
+* TPM is enabled (version 2.0 only).
+* No hardware or firmware changes made since delivery.
+* All iDRAC USB ports are enabled.
+* No drives removed from iDRAC system registers.
+* FlexAddress is disabled (modular systems).
+* NPAR/NPAReP cards are not yet enabled.
+* USB-NIC adapter is manually enabled (if using in-band communication).
+* iDRAC firmware is within 4 versions of SCV’s max supported release.
+
+Use SCV with iDRAC GUI
+Access the iDRAC GUI
+To access the Integrated Dell Remote Access Controller (iDRAC) GUI, users can log in with various credentials and follow specific login instructions, including entering a username and password, and selecting the appropriate domain. The login process supports different types of users such as local, Active Directory, and LDAP users.
+Login methods
+You can log in to iDRAC using the following credentials:
+* iDRAC local user
+* Microsoft Active Directory user
+* Lightweight Directory Access Protocol (LDAP)
+* OpenID Connect and Single Sign-On
+Login instructions
+1. Enter the username. If you are an Active Directory user, enter the username in one of the following formats:
+    * username@domain_name
+    * domain_name/username
+    * domain_name\\username
+2. Enter the password.
+3. Domain selection:
+    * If you are a local user, select This iDRAC.
+    * If you are an Active Directory user, select the Active Directory domain name. If you have specified the domain name as part of the username, select This iDRAC.
+    * If you are an LDAP user, domain name is not required. By default, This iDRAC is selected.
+
+Use iDRAC UI for SCV operations
+About this task
+To use the iDRAC UI for Secured Configuration Validation operations, do the following:
+Steps
+1. On the iDRAC dashboard, go to System > Inventory > Secured Component Verification.
+2. ￼
+3. Figure 1. Firmware inventory summary
+4. Select the Download Certificate option to retrieve the SCV certificate associated with the system. 
+5. ￼
+6. Figure 2. Overview of SCV certification
+7. Click the Validate SCV button to initiate the verification process. The authenticity and integrity of hardware components is verified.
+8. ￼
+9. Figure 3. Verification Progress for SCV
+10. Upon completion of the validation, select Download Detailed Report to obtain a comprehensive summary of the SCV results.
+11. ￼
+12. Figure 4. Summary of SCV
+Open the SCV_CommandExecutionRep file to review the detailed findings and ensure that all components meet expected standards.
+￼
+Figure 5. Verification Report for SCV
+
+
+Download SCV application
+To complete the acceptance process with verification of your Dell Server, download and install the SCV application and root certificates from the official Dell Support page.
+About this task
+To download and install the necessary software and certificates on your Dell Product, do the following:
+Steps
+1. Identify Your Dell Product.
+    * Go to Dell Support page.
+    * Locate your product by:
+        * Entering the Service Tag or Express Service Code, or
+        * Browsing through the product categories.
+2. 
+3. Navigate to the Drivers and Downloads.
+    * Once you have your product selected, go to the Drivers and Downloads tab.
+    * In the search bar, type Secured Component Verification (SCV).
+    * Select the appropriate Operating System from the dropdown menu.
+4. 
+5. Download SCV Application.
+    * Locate the SCV application in the search results.
+    * Click Download to begin downloading.
+6. 
+7. Download the SCV Root Certificate.
+    * Enter SCV common root certificate in the search field and begin search. Click the down arrow to view details and confirm compatibility.
+    * When you check the box next to Dell SCV Common Root Certificate the Download Selected button will be available to click to initiate download of certificate.
+8. 
+9. Review Additional Downloads (Optional)
+    * Scroll down to view the list of available downloads for your product.
+    * Use the down arrow next to each item to view more details.
+    * If the Dell root certificate is not listed, you can search for it separately using the search bar.
+10. 
+11. Verify System Requirements
+    * Before installing, ensure your system meets the minimum requirements for the SCV application. To learn more about these requirements, see the key guidelines and recommendations and the Secured Component Verification Compatibility Matrix located at Secured Component Verification.
+12. 
+13. Install the SCV Application
+    * Run the installer on your Dell server.
+    * Follow all installation prompts carefully.
+    * Confirm that the correct Operating System is selected.
+14. By following these steps and ensuring you have the correct downloads for your system, you can successfully install the SCV application and root certificates, enhancing the security and reliability of your Dell server.
+
+Installation and operations for SCV on Linux
+
+Run SCV on Linux
+Prerequisites
+Download the SCV application.
+About this task
+You must have root privileges or use sudo to complete the installation on a Linux system. To run SCV on Linux, do the following:
+Steps
+1. In the terminal, navigate to the directory where SCV package is downloaded and extract the file using the command tar -zxvf DellEMC-SCV-Web-LX-X.X.X-XXX_XXX.tar.gz. localhost:~/SCVBUILD # tar -xvzf Dell-SCV-Web-LX-2.5.0-53_A00.tar.gz
+2. COPYRIGHT.txt
+3. license.txt
+4. SCVTools/
+5. SCVTools/RPMS/
+6. SCVTools/RPMS/supportRPMS/
+7. SCVTools/RPMS/supportRPMS/srvadmin/
+8. SCVTools/RPMS/supportRPMS/srvadmin/RHEL8/
+9. SCVTools/RPMS/supportRPMS/srvadmin/RHEL8/x86_64/
+10. SCVTools/RPMS/supportRPMS/srvadmin/RHEL8/x86_64/scv-2.5.0-53.el8.x86_64.rpm
+11. SCVTools/RPMS/supportRPMS/srvadmin/RHEL9/
+12. SCVTools/RPMS/supportRPMS/srvadmin/RHEL9/x86_64/
+13. SCVTools/RPMS/supportRPMS/srvadmin/RHEL9/x86_64/scv-2.5.0-53.el9.x86_64.rpm
+14. SCVTools/RPMS/supportRPMS/srvadmin/SLES15/
+15. SCVTools/RPMS/supportRPMS/srvadmin/SLES15/x86_64/
+16. SCVTools/RPMS/supportRPMS/srvadmin/SLES15/x86_64/scv-2.5.0-53.sles15.x86_64.rpm
+17. SCVTools/install_scv.sh
+18. SCVTools/uninstall_scv.sh
+19. SCVTools/readme.txt
+20. localhost:~/SCVBUILD #Figure 1. Extracting SCV tools on Linux
+21. Navigate to the directory SCVTools after the files have been extracted and run the install_scv.sh script using the command: sh install_scv.sh. When prompted, accept the End User License Agreement (EULA) by entering yes. Once you have accepted the EULA, the installation completes. localhost:~/SCVBUILD/SCVTools # ./install_scv.sh
+22. warning: scv-2.5.0-53.sles15.x86_64.rpm: Header V4 RSA/SHA512 Signature, key ID 34d8786f: NOKEY
+23. Preparing...                          ################################# [100%]
+24. Updating / installing...
+25.    1:scv-2.5.0-53.sles15             ################################# [100%]
+26. SCV installed Successfully.
+27. localhost:~/SCVBUILD/SCVTools #Figure 2. Executing the SCV installation script
+    * To uninstall SCV, use the command: sh uninstall_scv.sh.
+28. Once SCV is installed, run the command scv validateSystemInventory to start the validation process.
+    * Use the command scv help to get more information about SCV and how to run it.
+    * After getting Ready state in racadm getremoteservicesstatus output, ensure that you wait for about 120 seconds before running the scv commands.
+29. Once the system runs the SCV application successfully, it should give the result as scv validatesysteminventory: Match. scv validatesysteminventory -r <ip address> -u **** -p ****
+30. SCV Application Version : 2.3.0-486
+31. Download SCV Platform Certificate and Delta Certificate(s): Pass
+32. Validating Signature : Pass
+33. Validating Root of Trust : Pass
+34. Validating Proof of Possession: Pass
+35. Collecting System Inventory: Pass
+36. SCV Application Supports the Profile : Pass
+37. Profile Version Present in Certificate : 2.3.0
+38. Profile Version Present in System Inventory : 2.3.0
+39. Compare Certificate Service Tag STMRC31 with System Inventory Service Tag: Match
+40. Inventory Comparison Result : Match
+41. Refer Detailed Report File at : <OS Specific path>/scvapp/out/SCV_CommandExecutionReport_STMRC31_2025_04_22_13_24_27.txt
+42. Refer Detailed Json Report File at : <OS Specific path>/scvapp/out/SCV_CommandExecutionReport_STMRC31_2025_04_22_13_24_27.jsonFigure 3. Running the validation command and result is Match
+43. If the result shows as Validating System Inventory: Mismatch, it specifies which component has mismatched under Mismatch Inventory Summary. ---------------------------------------------------------------------------
+44. System Information
+45. ---------------------------------------------------------------------------
+46. Service Tag: <Service Tag>
+47. Host IP: <IP Address>
+48. Platform Model: PowerEdge R650
+49. Manufacturer: Dell Inc.
+50. ---------------------------------------------------------------------------
+51. Command Information
+52. ---------------------------------------------------------------------------
+53. Command : ValidateSystemInventory
+54. Execution Mode : InBand
+55. Enforce Order : Not Enforced
+56. Command Status: Success
+57. ---------------------------------------------------------------------------
+58. Command Execution Status
+59. ---------------------------------------------------------------------------
+60. Download SCV Platform Certificate and Delta Certificate(s) : Success
+61. Validate Certificate(s) Signature : Success
+62. Validate Certificate(s) Root Of Trust : Success
+63. Validate SCV Platform Certificate Proof Of Possession : Success
+64. Collect System Inventory : Success
+65. Validate System Inventory : Success
+66. SCV Application Support For System Inventory Profile : Supported
+67. Compare SCV Certificate(s) inventory against current system inventory : Success
+68. ---------------------------------------------------------------------------
+69. Component Inventory Comparison Results
+70. ---------------------------------------------------------------------------
+71. Service Tag Comparison Result : Match
+72. Inventory Comparison Result : Mismatch
+73. Over All Comparison Result : Mismatch
+74. ---------------------------------------------------------------------------
+75. Inventory Mismatch Summary
+76. ---------------------------------------------------------------------------
+77. Added Components Summary:
+78. 		HardDrive	PHLN1142018Z1P6AGN	Disk.Bay.3:Enclosure.Internal.0-1
+79. 		HardDrive	PHLN114201751P6AGN	Disk.Bay.2:Enclosure.Internal.0-1
+80. 		HardDrive	PHLN1142018X1P6AGN	Disk.Bay.0:Enclosure.Internal.0-1
+81. 		HardDrive	PHLN1142015J1P6AGN	Disk.Bay.1:Enclosure.Internal.0-1
+82. ---------------------------------------------------------------------------
+83. Added Components
+84. ---------------------------------------------------------------------------
+85. {
+86.     "HardDrive": [
+87.         {
+88.             "ComponentRegistryOID": "2.23.133.18.3.1",
+89.             "ComponentClass": "0x00070002",
+90.             "CertificateIdentifier": "Unknown",
+91.             "HardwareVersionNumber": "Unknown",
+92.             "Location": "Disk.Bay.3:Enclosure.Internal.0-1",
+93.             "Manufacturer": "Intel Corporation",
+94.             "Model": "Unknown",
+95.             "SerialNumber": "PHLN1142018Z1P6AGN"
+96.         },
+97.         {
+98.             "ComponentRegistryOID": "2.23.133.18.3.1",
+99.             "ComponentClass": "0x00070002",
+100.             "CertificateIdentifier": "Unknown",
+101.             "HardwareVersionNumber": "Unknown",
+102.             "Location": "Disk.Bay.2:Enclosure.Internal.0-1",
+103.             "Manufacturer": "Intel Corporation",
+104.             "Model": "Unknown",
+105.             "SerialNumber": "PHLN114201751P6AGN"
+106.         },
+107.         {
+108.             "ComponentRegistryOID": "2.23.133.18.3.1",
+109.             "ComponentClass": "0x00070002",
+110.             "CertificateIdentifier": "Unknown",
+111.             "HardwareVersionNumber": "Unknown",
+112.             "Location": "Disk.Bay.0:Enclosure.Internal.0-1",
+113.             "Manufacturer": "Intel Corporation",
+114.             "Model": "Unknown",
+115.             "SerialNumber": "PHLN1142018X1P6AGN"
+116.         },
+117.         {
+118.             "ComponentRegistryOID": "2.23.133.18.3.1",
+119.             "ComponentClass": "0x00070002",
+120.             "CertificateIdentifier": "Unknown",
+121.             "HardwareVersionNumber": "Unknown",
+122.             "Location": "Disk.Bay.1:Enclosure.Internal.0-1",
+123.             "Manufacturer": "Intel Corporation",
+124.             "Model": "Unknown",
+125.             "SerialNumber": "PHLN1142015J1P6AGN"
+126.         }
+127.     ]
+128. }
+129. ---------------------------------------------------------------------------
+130. Matched Components
+131. ---------------------------------------------------------------------------
+132. {
+133.     "Baseboard": [
+134.         {
+135.             "ComponentRegistryOID": "2.23.133.18.3.1",
+136.             "ComponentClass": "0x00030003",
+137.             "CertificateIdentifier": "Unknown",
+138.             "HardwareVersionNumber": "A01",
+139.             "Location": "1",
+140.             "Manufacturer": "Dell Inc.",
+141.             "Model": "0PJ7YJ",
+142.             "SerialNumber": "CNIVC0026M0034"
+143.         }
+144.     ],
+145.     "HardDrive": [
+146.         {
+147.             "ComponentRegistryOID": "2.23.133.18.3.1",
+148.             "ComponentClass": "0x00070002",
+149.             "CertificateIdentifier": "Unknown",
+150.             "HardwareVersionNumber": "Unknown",
+151.             "Location": "Disk.Bay.5:Enclosure.Internal.0-1",
+152.             "Manufacturer": "SK hynix",
+153.             "Model": "Unknown",
+154.             "SerialNumber": "SJB5N7040I2405V2Z"
+155.         },
+156.         {
+157.             "ComponentRegistryOID": "2.23.133.18.3.1",
+158.             "ComponentClass": "0x00070002",
+159.             "CertificateIdentifier": "Unknown",
+160.             "HardwareVersionNumber": "Unknown",
+161.             "Location": "Disk.Bay.7:Enclosure.Internal.0-1",
+162.             "Manufacturer": "SK hynix",
+163.             "Model": "Unknown",
+164.             "SerialNumber": "SJB5N7040I2405V32"
+165.         },
+166.         {
+167.             "ComponentRegistryOID": "2.23.133.18.3.1",
+168.             "ComponentClass": "0x00070002",
+169.             "CertificateIdentifier": "Unknown",
+170.             "HardwareVersionNumber": "Unknown",
+171.             "Location": "Disk.Bay.6:Enclosure.Internal.0-1",
+172.             "Manufacturer": "SK hynix",
+173.             "Model": "Unknown",
+174.             "SerialNumber": "SJB5N7040I2405V2Y"
+175.         },
+176.         {
+177.             "ComponentRegistryOID": "2.23.133.18.3.1",
+178.             "ComponentClass": "0x00070002",
+179.             "CertificateIdentifier": "Unknown",
+180.             "HardwareVersionNumber": "Unknown",
+181.             "Location": "Disk.Bay.4:Enclosure.Internal.0-1",
+182.             "Manufacturer": "SK hynix",
+183.             "Model": "Unknown",
+184.             "SerialNumber": "SJB5N7040I2405V33"
+185.         },
+186.         {
+187.             "ComponentRegistryOID": "2.23.133.18.3.1",
+188.             "ComponentClass": "0x00070002",
+189.             "CertificateIdentifier": "Unknown",
+190.             "HardwareVersionNumber": "Unknown",
+191.             "Location": "Disk.Direct.1-1:AHCI.SL.6-1",
+192.             "Manufacturer": "MICRON",
+193.             "Model": "MTFDDAV480TDS",
+194.             "SerialNumber": "22323A715AA3"
+195.         }
+196.     ],
+197.     "Memory": [
+198.         {
+199.             "ComponentRegistryOID": "2.23.133.18.3.1",
+200.             "ComponentClass": "0x00060001",
+201.             "CertificateIdentifier": "Unknown",
+202.             "HardwareVersionNumber": "Unknown",
+203.             "Location": "B2",
+204.             "Manufacturer": "Hynix Semiconductor",
+205.             "Model": "DDR4 DIMM",
+206.             "SerialNumber": "45968D7E"
+207.         },
+208.         {
+209.             "ComponentRegistryOID": "2.23.133.18.3.1",
+210.             "ComponentClass": "0x00060001",
+211.             "CertificateIdentifier": "Unknown",
+212.             "HardwareVersionNumber": "Unknown",
+213.             "Location": "A1",
+214.             "Manufacturer": "Hynix Semiconductor",
+215.             "Model": "DDR4 DIMM",
+216.             "SerialNumber": "45968D79"
+217.         },
+218.         {
+219.             "ComponentRegistryOID": "2.23.133.18.3.1",
+220.             "ComponentClass": "0x00060001",
+221.             "CertificateIdentifier": "Unknown",
+222.             "HardwareVersionNumber": "Unknown",
+223.             "Location": "A2",
+224.             "Manufacturer": "Hynix Semiconductor",
+225.             "Model": "DDR4 DIMM",
+226.             "SerialNumber": "45968D77"
+227.         },
+228.         {
+229.             "ComponentRegistryOID": "2.23.133.18.3.1",
+230.             "ComponentClass": "0x00060001",
+231.             "CertificateIdentifier": "Unknown",
+232.             "HardwareVersionNumber": "Unknown",
+233.             "Location": "B1",
+234.             "Manufacturer": "Hynix Semiconductor",
+235.             "Model": "DDR4 DIMM",
+236.             "SerialNumber": "45968D6B"
+237.         }
+238.     ],
+239.     "Network": [
+240.         {
+241.             "ComponentRegistryOID": "2.23.133.18.3.1",
+242.             "ComponentClass": "0x00090002",
+243.             "CertificateIdentifier": "Unknown",
+244.             "HardwareVersionNumber": "Unknown",
+245.             "Location": "NIC.Integrated.1-1-1",
+246.             "Manufacturer": "Broadcom",
+247.             "Model": "Broadcom Adv. Dual 25Gb Ethernet - 84:16:0C:57:B3:A0",
+248.             "SerialNumber": "VNFCVBA23R04S8",
+249.             "MacAddress": "84:16:0C:57:B3:A0"
+250.         },
+251.         {
+252.             "ComponentRegistryOID": "2.23.133.18.3.1",
+253.             "ComponentClass": "0x00090002",
+254.             "CertificateIdentifier": "Unknown",
+255.             "HardwareVersionNumber": "Unknown",
+256.             "Location": "NIC.Integrated.1-2-1",
+257.             "Manufacturer": "Broadcom",
+258.             "Model": "Broadcom Adv. Dual 25Gb Ethernet - 84:16:0C:57:B3:A1",
+259.             "SerialNumber": "VNFCVBA23R04S8",
+260.             "MacAddress": "84:16:0C:57:B3:A1"
+261.         },
+262.         {
+263.             "ComponentRegistryOID": "2.23.133.18.3.1",
+264.             "ComponentClass": "0x00090002",
+265.             "CertificateIdentifier": "Unknown",
+266.             "HardwareVersionNumber": "Unknown",
+267.             "Location": "NIC.Embedded.1-1-1",
+268.             "Manufacturer": "Broadcom",
+269.             "Model": "Broadcom Gigabit Ethernet BCM5720 - EC:2A:72:32:6D:98",
+270.             "SerialNumber": "Unknown",
+271.             "MacAddress": "EC:2A:72:32:6D:98"
+272.         },
+273.         {
+274.             "ComponentRegistryOID": "2.23.133.18.3.1",
+275.             "ComponentClass": "0x00090002",
+276.             "CertificateIdentifier": "Unknown",
+277.             "HardwareVersionNumber": "Unknown",
+278.             "Location": "NIC.Embedded.2-1-1",
+279.             "Manufacturer": "Broadcom",
+280.             "Model": "Broadcom Gigabit Ethernet BCM5720 - EC:2A:72:32:6D:99",
+281.             "SerialNumber": "Unknown",
+282.             "MacAddress": "EC:2A:72:32:6D:99"
+283.         },
+284.         {
+285.             "ComponentRegistryOID": "2.23.133.18.3.1",
+286.             "ComponentClass": "0x00090002",
+287.             "CertificateIdentifier": "Unknown",
+288.             "HardwareVersionNumber": "Unknown",
+289.             "Location": "NIC.Slot.2-1-1",
+290.             "Manufacturer": "Broadcom",
+291.             "Model": "Broadcom Adv. Dual 25Gb Ethernet - 84:16:0C:B3:BA:00",
+292.             "SerialNumber": "VNFCVBA26701KW",
+293.             "MacAddress": "84:16:0C:B3:BA:00"
+294.         },
+295.         {
+296.             "ComponentRegistryOID": "2.23.133.18.3.1",
+297.             "ComponentClass": "0x00090002",
+298.             "CertificateIdentifier": "Unknown",
+299.             "HardwareVersionNumber": "Unknown",
+300.             "Location": "NIC.Slot.2-2-1",
+301.             "Manufacturer": "Broadcom",
+302.             "Model": "Broadcom Adv. Dual 25Gb Ethernet - 84:16:0C:B3:BA:01",
+303.             "SerialNumber": "VNFCVBA26701KW",
+304.             "MacAddress": "84:16:0C:B3:BA:01"
+305.         }
+306.     ],
+307.     "PCIE": [
+308.         {
+309.             "ComponentRegistryOID": "2.23.133.18.3.1",
+310.             "ComponentClass": "0x00050000",
+311.             "CertificateIdentifier": "Unknown",
+312.             "HardwareVersionNumber": "Unknown",
+313.             "Location": "PCIe.Slot.2",
+314.             "Manufacturer": "Broadcom Inc. and subsidiaries",
+315.             "Model": "BCM57414 NetXtreme-E 10Gb/25Gb RDMA Ethernet Controller",
+316.             "SerialNumber": "VNFCVBA26701KW"
+317.         }
+318.     ],
+319.     "PowerSupply": [
+320.         {
+321.             "ComponentRegistryOID": "2.23.133.18.3.1",
+322.             "ComponentClass": "0x000A0002",
+323.             "CertificateIdentifier": "Unknown",
+324.             "HardwareVersionNumber": "A01",
+325.             "Location": "PSU.Slot.1",
+326.             "Manufacturer": "DELL",
+327.             "Model": "PWR SPLY,1400W,RDNT,DELTA",
+328.             "SerialNumber": "CNDED002822VNF"
+329.         },
+330.         {
+331.             "ComponentRegistryOID": "2.23.133.18.3.1",
+332.             "ComponentClass": "0x000A0002",
+333.             "CertificateIdentifier": "Unknown",
+334.             "HardwareVersionNumber": "A01",
+335.             "Location": "PSU.Slot.2",
+336.             "Manufacturer": "DELL",
+337.             "Model": "PWR SPLY,1400W,RDNT,DELTA",
+338.             "SerialNumber": "CNDED002822WWA"
+339.         }
+340.     ],
+341.     "Processor": [
+342.         {
+343.             "ComponentRegistryOID": "2.23.133.18.3.1",
+344.             "ComponentClass": "0x00010002",
+345.             "CertificateIdentifier": "Unknown",
+346.             "HardwareVersionNumber": "b3",
+347.             "Location": "CPU2",
+348.             "Manufacturer": "Intel",
+349.             "Model": "Intel(R) Xeon(R) Gold 6330 CPU @ 2.00GHz",
+350.             "SerialNumber": "B55258FCE651970B"
+351.         },
+352.         {
+353.             "ComponentRegistryOID": "2.23.133.18.3.1",
+354.             "ComponentClass": "0x00010002",
+355.             "CertificateIdentifier": "Unknown",
+356.             "HardwareVersionNumber": "b3",
+357.             "Location": "CPU1",
+358.             "Manufacturer": "Intel",
+359.             "Model": "Intel(R) Xeon(R) Gold 6330 CPU @ 2.00GHz",
+360.             "SerialNumber": "B59A1FFC25EA1D26"
+361.         }
+362.     ],
+363.     "iDRAC": [
+364.         {
+365.             "ComponentRegistryOID": "2.23.133.18.3.1",
+366.             "ComponentClass": "0x00060003",
+367.             "CertificateIdentifier": "MIICVTCCAfugAwIBAgIIAwAAAAAw8GowCgYIKoZIzj0EAwIwdTELMAkGA1UEBhMCQ04xETAPBgNVBAgMCFNoYW5naGFpMREwDwYDVQQHDAhTaGFuZ2hhaTERMA8GA1UECgwISW52ZW50ZWMxDTALBgNVBAsMBFBST0QxHjAcBgNVBAMMFTBJVkMwMC1DRTBDLTEwNUUtNjgyNjAeFw0yMjA2MjMyMDIwMDFaFw00MTA4MjIyMDIwMDFaMHExCzAJBgNVBAYTAlVTMQ4wDAYDVQQIDAVUZXhhczETMBEGA1UEBwwKUm91bmQgUm9jazERMA8GA1UECgwIRGVsbCBFTUMxDjAMBgNVBAsMBUlEUkFDMRowGAYDVQQDDBFlYzoyYTo3MjozMzo3MDoxNDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABHthawAMOLoRQDb6WuVaNlrW3b6wdol5QZqu7GyEDTEH2N0kQu7hJAaLWUxkR4/abpJUtakCiwcuY0qjfkhJQiCjeTB3MAkGA1UdEwQCMAAwCwYDVR0PBAQDAgXgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAdBgNVHQ4EFgQUXksfH0eXCvzwJes+UtMjoJ/IPo0wHwYDVR0jBBgwFoAU00ES2C0yiFfSPYXvc8lVHMrWGDEwCgYIKoZIzj0EAwIDSAAwRQIgATb4IIekgCNJQFhcqHRT6K0DxO5lnzRRXhXvD2i8SOQCIQC0XDQxFDqgF6biy5fPmWVbpntoRaeR8kmq5Et2pnfqVA==",
+368.             "HardwareVersionNumber": "iDRAC9",
+369.             "Location": "1",
+370.             "Manufacturer": "Dell",
+371.             "Model": "15G Monolithic",
+372.             "SerialNumber": "CLDBZR3",
+373.             "MacAddress": "ec:2a:72:33:70:14"
+374.         }
+375.     ]
+376. }
+377. Refer System Inventory JSON File at : <OS Specific path>/scvapp/out/SCV_SystemInventory_CLDBZR3_2024_09_19_10_37_12.json
+378. Refer Certificate JSON File at : <OS Specific path>/scvapp/out/SCV_CertificateInventory_Platform_CLDBZR3_2024_09_19_10_37_12.json
+Refer Certificate File at : <OS Specific path>/scvapp/out/SCV_Certificate_Platform_CLDBZR3_2024_09_19_10_37_12.crtFigure 4. Mismatched component details
+
+
+View the SCV logs in Linux
+About this task
+To view the SCV logs in Linux, follow the below steps:
+Steps
+1. Locate the SCV logs stored in the directory: /var/tmp/<username>/scvapp/logs. Replace <username> with the actual username of the user who ran the SCV command.
+2. Navigate to the logs folder using the command: cd /var/tmp/<username>/scvapp/logs.
+Use the command vi SCVLog_<service-tag>_<timestamp>.log to view the logs. Replace <service-tag> with the actual service tag of the system. Replace <timestamp> with the actual timestamp of the log file. For example: vi SCVLog_RtSTC21_2020_09_15_05_55_28.log
+
+Installation and operations for SCV on Windows Server 2019, 2022, and 2025
+
+Install SCV on Windows Server 2019, 2022, and 2025
+Prerequisites
+Download the SCV application.
+About this task
+You must have root privileges or use sudo to complete the installation on a Windows system. To install SCV on Windows Server 2019, Windows Server 2022, and Windows Server 2025, follow the below steps:
+Steps
+1. Extract the contents of Dell-SCVTools-Web-Web-LX-X.X.X-XXX_XXX.zip to a folder on your local.
+2. Locate the extracted application (it should be an executable file) and run it to start the InstallShield Wizard. This wizard guides you through the installation process.
+3. Click Next, then accept the License Agreement. You will go to the installation step. The default installation path is set to C:\ProgramFiles\Dell\SCVTools and cannot be customized.
+4. Click Install to begin the installation. Wait for the process to complete, then click Finish to exit the InstallShield Wizard.
+Run SCV on Windows Server 2019, 2022, and 2025
+About this task
+To run the SCV on Windows Server 2019, Windows Server 2022, and Windows Server 2025, follow the below steps:
+Steps
+1. Run the scv validatesysteminventory command to start the validation process.
+    * If you encounter the error 'Downloading SCV Factory Certificate: Fail' while the host firewall is enabled, create an outbound rule for the IP address to run the command successfully.
+    * After obtaining the 'Ready' status in the racadm getremoteservicesstatus output, wait for about 120 s before running the SCV commands.
+2. If the result shows Inventory Comparison Result : Match, it means the system's components match those expected according to the SCV certificate. scv validatesysteminventory
+3. SCV Application Version : 2.5.0-53
+4. Download SCV Platform Certificate and Delta Certificate(s): Pass
+5. Validating Signature : Pass
+6. Validating Root of Trust : Pass
+7. Validating Proof of Possession: Pass
+8. Collecting System Inventory: Pass
+9. SCV Application Supports the Profile : Pass
+10. Profile Version Present in Certificate : 2.3.0
+11. Profile Version Present in System Inventory : 2.3.0
+12. Compare Certificate Service Tag CMSTCCD with System Inventory Service Tag: Match
+13. Inventory Comparison Result : Match
+14.  
+15. Refer Detailed Report File at : <OS Specific path>\scvapp\out\SCV_CommandExecutionReport_CMSTCCD_2025_08_19_22_51_24.txt
+16. Refer Detailed Json Report File at : <OS Specific path>\scvapp\out\SCV_CommandExecutionReport_CMSTCCD_2025_08_19_22_51_24.jsonFigure 1. Running the validation command and result is a Match
+17. If it shows Inventory Comparison Result : Mismatch, it indicates discrepancies between the system components and that listed in the SCV certificate. PS C:\Users\Administrator> scv validatesysteminventory 
+18. SCV Application Version : 2.5.0-53
+19. Download SCV Platform Certificate and Delta Certificate(s): Pass
+20. Validating Signature : Pass
+21. Validating Root of Trust : Pass
+22. Validating Proof of Possession: Pass
+23. SCV Platform Certificate Public Key matches with All the Delta Certificate(s) Public Key: Pass
+24. Collecting System Inventory: Pass
+25. SCV Application Supports the Profile : Pass
+26. Profile Version Present in Certificate : 2.3.0
+27. Profile Version Present in System Inventory : 2.3.0
+28. Compare Certificate Service Tag CLDBZR3 with System Inventory Service Tag: Match
+29. Inventory Comparison Result : Mismatch
+30. 
+31. ---------------------------------------------------------------------------
+32. Inventory Mismatch Summary
+33. ---------------------------------------------------------------------------
+34. Added Components Summary:
+35. HardDrive       SJB5N7040I2405V2Y       Disk.Bay.7:Enclosure.Internal.0-1
+36. TPM     0093170FC233E56B3E91C9  RSA
+37. TPM     7D5F202279B257BB73B7    ECC
+38. TPM     0F50C7F92A7AB143A8CBEFC237844ADF        IDEVID
+39. TPM     Unknown IAK
+40.   
+41. Refer Detailed Report File at : <OS Specific path>\scvapp\out\SCV_CommandExecutionReport_CLDBZR3_2025_08_20_02_02_30.txt
+Refer Detailed Json Report File at : <OS Specific path>\scvapp\out\SCV_CommandExecutionReport_CLDBZR3_2025_08_20_02_02_30.jsonFigure 2. Running the validation command and result is a Mismatch
+
+
+Installation and operations for SCV application on WinPE
+
+Create an ISO image file to run SCV using WinPE
+Prerequisites
+Download the SCV application.
+About this task
+To create an ISO image file to run SCV by using WinPE, follow the below steps:
+Steps
+1. Ensure that the Windows ADK and Windows PE add-on for ADK are installed on your system. You can download and install these files from the Windows ADK page.
+2. Run the self-extractor file for Dell-SCVTools-Web-WINPE-X.X.X-XX_A00.zip and click Unzip to extract the files to the default location. NOTE:To extract the files to a specified location, click Browse, select the wanted folder, click Ok, and then Unzip. 
+3. Launch the command prompt and navigate to the directory where the files were extracted. Run the batch file (WinPE_driverinst.bat) using the command prompt to create a bootable ISO image file: Microsoft Windows [Version 10.0.22631.4602](c) Microsoft Corporation. All rights reserved.
+4. C:\Users\administrator>cd C:\Users\administrator\Downloads\Dell-SCVTools-Web-WINPE-2.5.0-53
+5. C:\Users\administrator\Downloads\Dell-SCVTools-Web-WINPE-2.5.0-53>WINPE_driverinst_Factory.bat 2.5.0-53
+6. ----------------------------------------
+7. ~~1(WINPE_driverinst.bat)-Checking the Paths
+8. ----------------------------------------
+9. "2.3.0"
+10. "485"
+11. -------------------------------------
+12. ~~2-Setting up a WinPE 11.x amd64 build environment
+13. -------------------------------------
+14. ===================================================
+15. Creating Windows PE customization working directory
+16. C:\Users\administrator\Downloads\Dell-SCVTools-Web-WINPE-2.5.0-53\WINPE_20251-02_234336
+17. ===================================================Figure 1. Create an ISO image using batch script file
+18. Once the ISO image file is created successfully, open the folder that is named WINPE-%timestamp% to find the ISO image file. Image File : C:\Users\administrator\Downloads\Dell-SCVTools-Web-WINPE-2.5.0-53\WINPE_20251-02_234336\media\sources\boot.wim
+19. Image Index : 1
+20. Saving image
+21. [==========================100.0%==========================]
+22. Unmounting image
+23. [==========================100.0%==========================]
+24. The operation completed successfully.
+25. 1 file(s) copied.
+26. ---------------------------------------------
+27. ~~9-Creating bootable ISO-CD image
+28. ---------------------------------------------
+29. OSCDIMG 2.56 CD-ROM and DVD-ROM Premastering Utility
+30. Copyright (C) Microsoft, 1993-2012. All rights reserved.
+31. Licensed only for producing Microsoft authorized content.
+32. Scanning source tree
+33. Scanning source tree complete (189 files in 138 directories)
+34. Computing directory information complete
+35. Image file is 1353023488 bytes (before optimization)
+36. Writing 189 files in 138 directories to C:\Users\administrator\Downloads\Dell-SCVTools-Web-WINPE-2.5.0-53\WINPE_20251-02_234336\DellEMC-Factory-SCV-Web-WinPE.x64-2.5.0-53.iso
+37. 100% complete
+38. Storage optimization saved 1 files, 34816 bytes (0% of image)
+39. After optimization, image file is 1353631744 bytes
+40. Space saved because of embedding, sparseness or optimization = 34816
+41. Done.
+42. -------------------------------
+43. ~~10(WINPE_driverinst_Factory.bat)-DONE.
+44. -------------------------------Figure 2. Configured an ISO image file
+45. Use this ISO image to boot the SCV environment on the server.
+
+Add SCV to a custom ISO image file
+Prerequisites
+Download the SCV application.
+About this task
+To add SCV to a custom ISO image file, follow the below steps:
+Steps
+1. Ensure that the Windows ADK and Windows PE add-on for ADK are installed on your system. You can download and install these files from the Windows ADK page.
+2. Run the self-extractor file for SCVTools and click Unzip to extract the files to the default location. NOTE:To extract the files to a specified location, click Browse, select the wanted folder, click Ok, and then Unzip. 
+3. Copy the following folders into the corresponding folder path in the Custom ISO image:
+    * scv to X:\Dell
+    * Toolkit\DLLs to X:\windows\system32
+4. 
+After copying the files, set the path for the folder using the command: set PATH=%PATH%;X:\Dell\scv. SCV can now be used to run validation.
+
+
+Run SCV on WinPE
+About this task
+To run SCV on WinPE, follow the below steps:
+Steps
+1. Log in to iDRAC in the system where you want to run the SCV Application.
+2. Launch the Virtual Console, click Virtual Media, and then click Connect Virtual Media.
+3. Click Virtual Media and under Map CD/DVD click Browse and select the ISO image for SCV and click Map Device and close the window.
+4. In the Virtual Console window, click Boot and select Virtual CD/DVD/ISO. Confirm the new boot device by clicking Yes at the prompt.
+5. Click Power and power on the system. Let it boot into the ISO image.
+6. Once the system boots into the ISO image, wait for the command prompt window to load into the directory X:\Dell>.
+7. Navigate to X:\Dell\scv. Run the command scv validateSystemInventory to start the validation process. Microsoft Windows [Version 10.0.19041.610]
+8. (c) 2020 Microsoft Corporation. All rights reserved.
+9. X: \windows\system32>cd ..\..\
+10. X: \>cd dell\scv
+11. X: \Dell\scv>dir
+12.  Volume in drive X is Boot
+13.  Volume Serial Number is D6ØA-ØOC2 
+14. Directory of X:\Dell\scv
+15. 02/21/2022        02:12 PM      <DIR>         .
+16. 02/21/2022        02:12 PM      <DIR>         . .  
+17. 03/04/2022        08:06 AM           4,555,264 scv.exe
+18. 02/21/2022        02:12 PM      <DIR>          scvapp
+19. 03/10/2022        03:52 AM           326 ismrfutil_rel.log
+20.                      2 File(s)       4,555,590 bytes
+21.                      3 Dir(s)        1,035,620,352 bytes free
+22. X: \Dell\scv>scv validatesysteminventoryFigure 1. Running the validation command
+23. If the result is Mismatch, it specifies which component has mismatched under the Mismatch Inventory Summary. scv validatesysteminventory
+24. SCV Application Version : -2.3.0-485
+25. Download SCV Platform Certificate and Delta Certificate(s): Pass
+26. Validating Signature : Pass
+27. Validating Root of Trust : Pass
+28. Validating Proof of Possession: Pass
+29. Collecting System Inventory: Pass
+30. SCV Application Supports the Profile : Pass
+31. Profile Version Present in Certificate : 2.3.0
+32. Profile Version Present in System Inventory : 2.3.0
+33. Compare Certificate Service Tag F1X6T94 with System Inventory Service Tag: Match
+34. Inventory Comparison Result : Mismatch
+35. ---------------------------------------------------------------------------
+36. Inventory Mismatch Summary
+37. ---------------------------------------------------------------------------
+38. Added Components Summary:
+39.                 TPM     6017807E7E0E0446BC1C500BDC758CE3        IDEVID
+40.                 TPM     E6BAA1425590C04481083FC85D23A683        IAK
+41. Removed Components Summary:
+42.                 TPM     Unknown IDEVID
+43.                 TPM     Unknown IAK
+44. Refer Detailed Report File at : <OS Specific path>scvapp\out\SCV_CommandExecutionReport_F1X6T94_2025_06_10_14_59_02.txt
+45. Refer Detailed Json Report File at : <OS Specific path>scvapp\out\SCV_CommandExecutionReport_F1X6T94_2025_06_10_14_59_02.txt 
+.jsonFigure 2. Mismatched component details
+
+Check the SCV log files using WinPE
+About this task
+On running SCV in WinPE, the logs are stored in the directory X:\Dell\scv\scvapp\logs. To check the logs, follow the below steps:
+Steps
+1. Navigate to logs folder: X:\Dell\scv>cd scvapp
+2. X:\Dell\scv\scvapp>cd logs
+3. 
+4. List the Log Files: X:\De11\scv>cd scvapp>logs>dir
+5. Volume in drive X is Boot
+6. Volume Serial Number is D60A-0DC2
+7. Directory of X:\Dell\scv\scvapp\logs
+8. 09/16/2020 10:09 AM  <DIR>     .
+9. 09/16/2020 10:09 AM  <DIR>     ..
+10. 09/16/2020 10:10 AM       506 SCVLog_FRH89V2 2020 09 16 10 09 37.log
+11.            1 File(s)      506 bytes
+12.            2 Dir(s)   520,667,136 bytes free Figure 1. Check the SCV log files in WinPE
+13. Open the Log File: X:\Dell\scv\scvapp\logs>notepad SCVLog_%service-tag%_%timestamp%.log
+Replace %service-tag% and %timestamp% with the appropriate values for your log file.
+
+
+Running SCV remotely
+
+Run SCV remotely on Linux
+About this task
+To run SCV remotely on a Linux system, follow the below steps:
+Steps
+Run the following command to start the validation process: scv validatesysteminventory -r <iDRAC IPv4/IPv6 address> -u <user name> -p <password>.
+1. Replace <iDRAC IPv4/IPv6 address> with the IP address of the iDRAC interface.
+2. Replace <user name> and <password> with the credentials for the iDRAC interface.
+Results
+* The command outputs the validation results, including the status of each check (for example, "Pass" or "Fail").
+* The final result indicates whether the inventory comparison is a "Match" or not.
+* The command will generate detailed report files in the /var/tmp/scvapp/out/ directory by default.
+Example
+scv validatesysteminventory -r <ip address> -u <user name> -p <password>
+SCV Application Version : 2.3.0-485
+Download SCV Platform Certificate and Delta Certificate(s): Pass
+Validating Signature : Pass
+Validating Root of Trust : Pass
+Validating Proof of Possession: Pass
+Collecting System Inventory: Pass
+SCV Application Supports the Profile : Pass
+Profile Version Present in Certificate : 2.3.0
+Profile Version Present in System Inventory : 2.3.0
+Compare Certificate Service Tag DTNT201 with System Inventory Service Tag: Match
+Inventory Comparison Result : Match
+Refer Detailed Report File at : /var/tmp/scvapp/out/SCV_CommandExecutionReport_DTNT201_2025_03_11_11_08_10.txt
+Refer Detailed Json Report File at : /var/tmp/scvapp/out/SCV_CommandExecutionReport_DTNT201_2025_03_11_11_08_10.json
+Figure 1. Run the validation command remotely on Linux and result is Match
+
+
+Run SCV remotely on Windows
+About this task
+To run SCV remotely on a Windows system, follow the below steps:
+Steps
+Run the following command to start the validation process: scv validatesysteminventory -r <iDRAC IPv4/IPv6 address> -u <user name> -p <password>.
+1. Replace <iDRAC IPv4/IPv6 address> with the IP address of the iDRAC interface.
+2. Replace <user name> and <password> with the credentials for the iDRAC interface.
+Results
+* The command outputs the validation results, including the status of each check (for example, "Pass" or "Fail").
+* The final result indicates whether the inventory comparison is a "Match" or not.
+* The command will generate detailed report files in the C:\Users\<user name>\AppData\Local\scvapp\out\ directory by default.
+Example
+PS C:\Users\Administrator> scv validatesysteminventory -r <ip address> -u <user name> -p <password>
+SCV Application Version : 2.5.0-53
+Download SCV Platform Certificate and Delta Certificate(s): Pass
+Validating Signature : Pass
+Validating Root of Trust : Pass
+Validating Proof of Possession: Pass
+Collecting System Inventory: Pass
+SCV Application Supports the Profile : Pass
+Profile Version Present in Certificate : 2.3.0
+Profile Version Present in System Inventory : 2.3.0
+Compare Certificate Service Tag CMSTCCD with System Inventory Service Tag: Match
+Inventory Comparison Result : Match
+ 
+Refer Detailed Report File at : C:\Users\WIN-E42TI2OHA9V\Administrator\AppData\Local\scvapp\out\SCV_CommandExecutionReport_CMSTCCD_2025_08_20_02_07_20.txt
+Refer Detailed Json Report File at : C:\Users\WIN-E42TI2OHA9V\Administrator\AppData\Local\scvapp\out\SCV_CommandExecutionReport_CMSTCCD_2025_08_20_02_07_20.json
+Figure 1. Run the validation command remotely on Windows and result is Match
+
+
+Run SCV remotely on WinPE
+About this task
+To run SCV remotely on a WinPE, follow the below steps:
+Steps
+Run the following command to start the validation process: scv validatesysteminventory -r <iDRAC IPv4/IPv6 address> -i. Alternatively, you can use the command: scv validatesysteminventory -r <ip address> -u <user name> -p <password>.
+1. Replace <iDRAC IPv4/IPv6 address> with the IP address of the iDRAC interface.
+2. Replace <ip address> with the IP address of the iDRAC interface.
+3. Replace <username> and <password> with the credentials for the iDRAC interface.
+Results
+* The command outputs the validation results, including the status of each check (for example, "Pass" or "Fail").
+* The final result indicates whether the inventory comparison is a "Match" or not.
+* The command generates detailed report files in the X:\scvapp\out\ directory (where X is the drive letter of the WinPE environment).
+Example
+scv validatesysteminventory -r <ip address> -u <user name> -p <password>
+SCV Application Version : 2.5.0-53
+Download SCV Platform Certificate and Delta Certificate(s): Pass
+Validating Signature : Pass
+Validating Root of Trust : Pass
+Validating Proof of Possession: Pass
+Collecting System Inventory: Pass
+SCV Application Supports the Profile : Pass
+Profile Version Present in Certificate : 2.5.0
+Profile Version Present in System Inventory : 2.5.0
+Compare Certificate Service Tag DTNT201 with System Inventory Service Tag: Match
+Inventory Comparison Result : Match
+Refer Detailed Report File at : <OS Specific path>\scvapp\out\SCV_CommandExecutionReport_DTNT201_2025_03_11_11_08_10.txt
+Refer Detailed Json Report File at : <OS Specific path>\Local\scvapp\out\SCV_CommandExecutionReport_DTNT201_2025_03_11_11_08_10.json
+Figure 1. Run the validation command remotely on WinPE and result is Match
+
+Upgrading SCV application
+
+* 		Upgrade SCV on Linux
+		Upgrade SCV on Windows
+
+Upgrade SCV on Linux
+About this task
+To upgrade the Secured Component Verification (SCV) application on a Linux system, follow the below steps:
+Steps
+1. Extract the contents of the filename.tar.gz file using the command tar -xvzf filename.tar.gz. This unpacks the archive to a folder named SCVTOOLS.
+2. Navigate to SCVTOOLS folder.
+3. Run the installation script by running the command ./install.sh..
+4. When prompted, accept the End User License Agreement (EULA) by entering yes. Once you have accepted the EULA, the installation completes, and your Linux upgrade on the SCV application is completed.
+
+Upgrade SCV on Windows
+About this task
+To upgrade the Secured Component Verification (SCV) application on a Windows system, follow the below steps:
+Steps
+1. Locate the downloaded ZIP file containing the SCV upgrade package. Right-click the ZIP file and select Extract All. Open the extracted folder and double-click setup.exe to begin the upgrade process.
+2. A pop-up window appears, prompting you to confirm whether you want to proceed with the upgrade of SCV. Click Yes to continue.
+3. The InstallShield Wizard launches. Click Next to proceed with the installation.
+4. The wizard guides you through the upgrade process. Once the installation is complete, you see a final screen. Click Finish to complete the upgrade.
+
+
+SCV Root CA Certificate
+The root certificate is available for customers to manually verify that the signature of an SCV platform certificate was created by a Dell factory that is trusted by the root. While our SCV application automatically performs this verification, the root certificate is provided for other scenarios where customers may need to verify the root directly.
+
+* 		SCV Root CA Certificate for 15G and 16G PowerEdge systems
+		SCV Root CA Certificate for 17G PowerEdge systems
+
+
+SCV Root CA Certificate for 15G and 16G PowerEdge systems
+This section provides details for the SCV Root CA Certificate for 15G and 16G PowerEdge systems:
+* File Format: Extracts files directly to local disk.
+* File Name: Certificate A00.zip.
+* File Size: 929 Bytes.
+* Format Description: This file format consists of an archive of files that may be decompressed to a directory on the hard drive. The installation can then be done from that directory.
+Download Link: Certificate A00.
+To ensure the integrity of your download, please verify the checksum value.
+* MD5: edb649dbf130e43aeaf5358f1186d312.
+* SHA1: a92d23c8e9e61fd5c4e568cb23be3024df3f886f.
+* SHA-256: c947162dc67f5d441ff22b063d7566c52db23cc0c51746455e492c60943f8165.
+
+SCV Root CA Certificate for 17G PowerEdge systems
+This section details the SCV Root CA Certificate for 17G PowerEdge systems:
+* File Format: Extracts files directly to local disk.
+* File Name: SCV17G-RootCA.zip.
+* File Size: 929 Bytes.
+* Format Description: This file format consists of an archive of files that may be decompressed to a directory on the hard drive. The installation can then be done from that directory.
+Download Link: Certificate A00.
+To ensure the integrity of your download, verify the checksum value.
+* MD5: afc9bf072ca349e0af3ed8182c48eabd.
+* SHA1: 077887f1f6ee75ccfeada2be786c73b0e5ca358d.
+* SHA-256: b491526ea54ade9ea147ecff12e90c1ce6660beccd53bcf1669d8e04fc59e4bc.
+
+SCV command parameters and options
+
+* 		scv version
+* 		scv help
+* 		scv validatesysteminventory
+* 		scv getcertinfo
+* 		scv extractcert
+		scv mars
+
+
+scv version
+Table 1. scv version
+						
+							
+SCV VERSION
+						
+					
+						
+							
+Output			scv version	SCV version 2.3.0 (Build No-486)	Copyright(c) 2020 - 2025 Dell Inc.	All Rights Reserved	
+
+
+
+Table 1. scv help
+						
+							
+SCV HELP
+						
+					
+						
+							
+Output
+							
+General Help Output
+									
+scv help
+
+SCV -- Secured Component Verification
+
+Usage: scv help <subcommand> [options]...
+
+List of supported subcommands:
+        - validatesysteminventory
+        - deltacert
+        - extractcert
+        - getcertinfo
+        - version
+        - mars
+
+
+Note:
+
+This is the SCV Help Command.If there is a space between the directory path, forward slash (/) must be used as directory separator.
+ 
+Subcommand Help Output:
+									validatesysteminventory
+scv.exe help validatesysteminventory
+
+SCV -- Secured Component Verification
+
+Usage: scv.exe validatesysteminventory [options]...
+
+List of supported options:
+        -r, --remoteip=<Remote Target IP>       Target System IP. Not required when SCV is running on Host OS.
+        -u, --username=<UserName>               Username for authenticating to target system. Not required when SCV is running on Host OS.
+        -p, --password=<Password>               Password for authenticating to target system. Not required when SCV is running on Host OS.
+        -i, --interactive                       Enable interactive command execution mode. UserName and password will be accepted interactively from the user
+        -d, --directory=<Directory Path>        Output directory path (Maximum 247 characters). If not specified, current working directory will be the output directory.If there is a space between the directory path, forward slash (/) must be used as directory separator.
+        -e, --enforceorder                      Force component slot location comparison along with the serial number comparison.
+        -w, --wipe                              Clear the old output and logs files. By default, will be scvapp/out/ and scvapp/logs/. Note : Files generated during the current command execution will be retained.
+        -t, --template=<Template Path>          Template directory path (Maximum 247 characters). If not specified, it takes the default template directory path based on OS.If there is a space between the directory path, forward slash (/) must be used as directory separator.
+        -F, --firmware                          Option to enable firmware certificate
+        -j, --parallelExecution                 To run multiple instances of a SCV application
+
+
+List of Example Commands:
+        scv.exe validatesysteminventory [ -e|--enforceorder ] [ -d|--directory ] [ -w|--wipe ] [ -F|--firmware ] [ -r|--remoteip -i|--interactive ] [ -t|--template ] [ -j|--parallelExecution ] [ -r|--remoteip -u|--username -p|--password ] 
+
+
+Note:
+        The detailed logs collected are available at directory->scvapp->logs folder.
+        Steps Performed:
+                Downloads SCV factory certificate and Delta certificate(s)
+                Validates Signature and Root of Trust
+                Validates Proof of Possession
+                Verifies application supported certificate profile version
+                Validates System Service Tag
+                Collects and validates system inventory.
+
+NOTE:-j, --parallelExecution is available only
+									in SCV 2.6.0.			scv help <subcommand> provides detailed information about the command, its supported options, and usage examples.					extractcert		getcertinfo		version		mars					
+
+
+scv validatesysteminventory
+Table 1. scv validatesysteminventory
+						
+							
+SCV VALIDATESYSTEMINVENTORY 
+						
+					
+						
+							
+Output			scv validatesysteminventory	SCV Application Version : 2.5.0-53	Download SCV Platform Certificate and Delta Certificate(s): Pass	Validating Signature : Pass	Validating Root of Trust : Pass	Validating Proof of Possession: Pass	Collecting System Inventory: Pass	SCV Application Supports the Profile : Pass	Profile Version Present in Certificate : 2.5.0	Profile Version Present in System Inventory : 2.5.0	Compare Certificate Service Tag CMSTCCD with System Inventory Service Tag: Match	Inventory Comparison Result : Match	Refer Detailed Report File at : <Path based on OS>\scvapp\out\SCV_CommandExecutionReport_CMSTCCD_2025_08_07_23_40_01.txt	Refer Detailed Json Report File at : <Path based on OS>\scvapp\out\SCV_CommandExecutionReport_CMSTCCD_2025_08_07_23_40_01.json						-p, --password=<Password>		Password for authenticating to the target system. Not	required when SCV is running on a Host operating	system.				-i, --interactive		Enable interactive command execution mode. UserName and	password will be accepted interactively from the	user.						-d, --directory=<Directory Path>		Output directory path (Maximum 247 characters). If not	specified, current working directory is the output	directory.If there is a space between the directory	path, forward slash (/) must be used as directory	separator.						-e, --enforceorder		Force component slot location comparison along with the	serial number comparison.						-w, --wipe		Clear the old output and logs files. By default, will be	scvapp/out/ and scvapp/logs/. Note : Files generated	during the current command execution will be	retained.						-t, --template=<Template Path>		Template directory path (Maximum 247 characters). If not	specified, it takes the default template directory path	based on the operating system. If there is a space	between the directory path, forward slash (/) must be	used as directory separator.						-F, --firmware		Option to enable firmware certificate.						-j, --parallelExecution		To run multiple instances of a SCV application.					NOTE:-j, --parallelExecution is available
+									only in SCV 2.6.0.				
+
+
+
+scv getcertinfo
+Table 1. scv getcertinfo
+						
+							
+SCV GETCERTINFO
+						
+					
+						
+							
+Output			scv getcertinfo -r <ip address> -i	Username: root	Password:	SCV Application Supports the Profile : Pass	SCV Certificate Status : Available	SCV Certificate version : SCV 2.3.0						-u, --username=<UserName>		Username for authenticating to the target system. Not	required when SCV is running on Host operating	system.				-p, --password=<Password>		Password for authenticating to the target system. Not	required when SCV is running on Host operating	system.						-i, --interactive		Enable interactive command execution mode. UserName and	password will be accepted interactively from the	user.						-j, --parallelExecution		To run multiple instances of a SCV application.					NOTE:-j, --parallelExecution is available
+									only in SCV 2.6.0.				
+
+
+scv extractcert
+Table 1. scv extractcert 
+						
+							
+SCV EXTRACTCERT 
+						
+					
+						
+							
+Output			scv extractcert -l 1 -C iDRAC	SCV Application Version : 2.3.0-485	Download SCV Platform Certificate and Delta Certificate(s): Pass	Processing Certificate for Extract cert id for File Name: SCV_Platform_DownloadedCert_2025_06_17_13_19_38.crt	Validating Signature : Pass	Validating Root of Trust : Pass	Success. Extract Cert Id Report is generated to : <OS Specific path>/scvapp/out/Extract_Cert_ID_2025_06_17_13_19_38.csv					-u, --username=<UserName>		Username for authenticating to the target system. Not	required when SCV is running on a Host operating system.							-p, --password=<Password>		Password for authenticating to the target system. Not	required when SCV is running on a Host operating	system.						-i, --interactive		Enable interactive command execution mode. UserName and	password will be accepted interactively from the	user.						-d, --directory=<Directory Path>		Output directory path (Maximum 247 characters). If not	specified, current working directory is the output	directory.If there is a space between the directory	path, forward slash (/) must be used as directory	separator.						-f, --file=<File Path>		Input or output file path.						-C, --component=<Component Name>		Component identifier of the desired component as in SCV	certificate.						-l, --location=<Component Location>		Component location of the desired component as in SCV	certificate.						-t, --template=<Template Path>		Template directory path (Maximum 247 characters). If not	specified, it takes the default template directory path	based on the operating system. If there is a space	between the directory path, forward slash (/) must be	used as directory separator.						-j, --parallelExecution		To run multiple instances of a SCV application.					NOTE:-j, --parallelExecution is available
+									only in SCV 2.6.0.				
+
+
+scv mars
+Table 1. scv mars 
+						
+							
+SCV MARS 
+						
+					
+						
+							
+Output			scv mars -f/SCVTest.zip ./scvapp/out/marsreport.csv	ServiceTags,Components,MacAddresses	<ServiceTag>,NIC.Embedded.1-1-1,C8:4B:D6:98:93:52	<ServiceTag>,NIC.Embedded.2-1-1,C8:4B:D6:98:93:53	<ServiceTag>,iDRAC,c8:4b:d6:98:93:4c		directory.If there is a space between the directory	path, forward slash (/) must be used as directory	separator.						-f, --file=<File Path>		Input or output file path.						
+
+
+
