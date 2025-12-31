@@ -69,9 +69,9 @@ func main() {
 	} else {
 		// Non-Interactive (Shortcut): Use defaults or Env Vars
 		llmConfig = &config.LLMConfig{
-			BaseURL:   os.Getenv("OLLAMA_HOST"),
-			ModelName: os.Getenv("OLLAMA_MODEL"),
-			APIKey:    "ollama",
+			BaseURL:   os.Getenv("BASE_URL"),
+			ModelName: os.Getenv("MODEL_NAME"),
+			APIKey:    os.Getenv("API_KEY"),
 		}
 		if llmConfig.BaseURL == "" {
 			llmConfig.BaseURL = "http://localhost:11434/v1"
@@ -124,6 +124,7 @@ If the user asks about files or artifacts, use the 'load_artifacts' tool to read
 	l := full.NewLauncher()
 
 	// Step 4: Execute with selected Interface Mode
+	fmt.Printf("[Debug] CWD: %s\n", cwd)
 	fmt.Printf("[Debug] Starting Launcher with args: %v\n", runArgs)
 	if err = l.Execute(ctx, launcherConfig, runArgs); err != nil {
 		log.Fatalf("Run failed: %v\n\n%s", err, l.CommandLineSyntax())

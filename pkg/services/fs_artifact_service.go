@@ -45,14 +45,23 @@ func (s *FileSystemArtifactService) List(ctx context.Context, req *artifact.List
 
 // Load reads a file from disk and returns it as an artifact.
 func (s *FileSystemArtifactService) Load(ctx context.Context, req *artifact.LoadRequest) (*artifact.LoadResponse, error) {
+	cwd, _ := os.Getwd()
+	fmt.Printf("[FSArtifactService] DEBUG: Load called for file: '%s' (len: %d). CWD: %s\n", req.FileName, len(req.FileName), cwd)
+
+	// Proactive fix: trim whitespace
+	req.FileName = strings.TrimSpace(req.FileName)
+
 	// Security check: simple path traversal prevention
 	if strings.Contains(req.FileName, "..") || strings.HasPrefix(req.FileName, "/") {
 		return nil, fmt.Errorf("invalid filename: %s", req.FileName)
 	}
 
+	fmt.Printf("[FSArtifactService] DEBUG: Post-trim filename: '%s'\n", req.FileName)
+
 	fullPath := filepath.Join(s.RootDir, req.FileName)
 	content, err := os.ReadFile(fullPath)
 	if err != nil {
+		fmt.Printf("[FSArtifactService] ERROR: os.ReadFile failed for '%s': %v\n", fullPath, err)
 		return nil, fmt.Errorf("failed to read file %s: %w", req.FileName, err)
 	}
 
