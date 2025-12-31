@@ -74,8 +74,17 @@ func (m *ModelStruct) GenerateContent(ctx context.Context, req *model.LLMRequest
 
 		adkResp, err := toADKResponse(resp)
 		if err != nil {
+			log.Printf("[Ollama] Response conversion failed: %v", err)
 			yield(nil, fmt.Errorf("failed to convert response: %w", err))
 			return
+		}
+
+		if len(adkResp.Content.Parts) > 0 {
+			for _, p := range adkResp.Content.Parts {
+				if p.FunctionCall != nil {
+					log.Printf("[Ollama] Model invoked tool: %s with args: %+v", p.FunctionCall.Name, p.FunctionCall.Args)
+				}
+			}
 		}
 
 		yield(adkResp, nil)
@@ -244,6 +253,7 @@ func toADKResponse(resp openai.ChatCompletionResponse) (*model.LLMResponse, erro
 	}
 
 	for _, tc := range choice.Message.ToolCalls {
+		log.Printf("[Ollama] Raw ToolCall: Name=%s, Args=%s", tc.Function.Name, tc.Function.Arguments)
 		var args map[string]any
 		if err := json.Unmarshal([]byte(tc.Function.Arguments), &args); err != nil {
 			log.Printf("Failed to unmarshal tool arguments: %v", err)

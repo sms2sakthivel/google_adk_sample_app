@@ -23,12 +23,11 @@ func (w *InteractiveWizard) SelectInterfaceMode() ([]string, error) {
 	fmt.Println("2. Web GUI (Interact via browser)")
 	fmt.Print("Enter choice [1]: ")
 
-	scanner := bufio.NewScanner(os.Stdin)
-	if scanner.Scan() {
-		choice := strings.TrimSpace(scanner.Text())
-		if choice == "2" {
-			return []string{"web", "api", "webui"}, nil
-		}
+	reader := bufio.NewReader(os.Stdin)
+	choice, _ := reader.ReadString('\n')
+	choice = strings.TrimSpace(choice)
+	if choice == "2" {
+		return []string{"web", "api", "webui"}, nil
 	}
 	return []string{"console"}, nil
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
@@ -22,6 +23,10 @@ import (
 func main() {
 	// Load .env file (optional)
 	_ = godotenv.Load()
+
+	// Configure logging
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	ctx := context.Background()
 
 	wizard := config.NewInteractiveWizard()
@@ -119,6 +124,7 @@ If the user asks about files or artifacts, use the 'load_artifacts' tool to read
 	l := full.NewLauncher()
 
 	// Step 4: Execute with selected Interface Mode
+	fmt.Printf("[Debug] Starting Launcher with args: %v\n", runArgs)
 	if err = l.Execute(ctx, launcherConfig, runArgs); err != nil {
 		log.Fatalf("Run failed: %v\n\n%s", err, l.CommandLineSyntax())
 	}
