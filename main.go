@@ -106,7 +106,8 @@ func main() {
 		Instruction: `You are a helpful AI assistant.
 You have access to a search tool and a local file artifact tool.
 If the user asks for information you don't know or real-time facts, YOU MUST use the 'search' tool.
-If the user asks about files or artifacts, use the 'load_artifacts' tool to read them.`,
+If the user asks about files or artifacts, use the 'load_artifacts' tool to read them.
+IMPORTANT: When calling 'load_artifacts', you MUST use the argument 'artifact_names' which is an array of strings (e.g. ["file.txt"]). Do NOT use 'path' or 'filename'.`,
 		Tools: []tool.Tool{
 			searchTool,
 			loadArtifactsTool,

@@ -253,20 +253,58 @@ func toADKResponse(resp openai.ChatCompletionResponse) (*model.LLMResponse, erro
 	}
 
 	for _, tc := range choice.Message.ToolCalls {
-		log.Printf("[Ollama] Raw ToolCall: Name=%s, Args=%s", tc.Function.Name, tc.Function.Arguments)
+		log.Printf("[Ollama] Raw ToolCall: Name='%s', Args='%s'", tc.Function.Name, tc.Function.Arguments)
 		var args map[string]any
 		if err := json.Unmarshal([]byte(tc.Function.Arguments), &args); err != nil {
 			log.Printf("Failed to unmarshal tool arguments: %v", err)
 			continue
 		}
 
-		// Workaround: Qwen/Ollama sometimes sends "artifact_names": "file.txt"
-		// instead of ["file.txt"]. The ADK tool expects an array.
-		if val, ok := args["artifact_names"]; ok {
-			if strVal, ok := val.(string); ok {
-				log.Printf("[Ollama] Fixing malformed artifact_names: %s -> [%s]", strVal, strVal)
-				args["artifact_names"] = []string{strVal}
+		// Fix: partial argument matching for known hallucinations
+		// The ADK tool 'load_artifacts' expects 'artifact_names' (array of strings).
+		// Models often send: 'artifact_name', 'path', 'file_name', 'filename', 'artifact_path'
+		// and sometimes as a single string instead of an array.
+
+		// helper to extract string or array
+		extractFiles := func(key string) []string {
+			if val, ok := args[key]; ok {
+				if strVal, ok := val.(string); ok && strVal != "" {
+					return []string{strVal}
+				}
+				if sliceVal, ok := val.([]interface{}); ok {
+					var result []string
+					for _, item := range sliceVal {
+						if s, ok := item.(string); ok {
+							result = append(result, s)
+						}
+					}
+					return result
+				}
 			}
+			return nil
+		}
+
+		// List of wrong keys to check
+		candidates := []string{"artifact_name", "path", "file_name", "filename", "artifact_path"}
+		var foundFiles []string
+
+		// Check correct key first, but might be wrong type (string vs array)
+		foundFiles = extractFiles("artifact_names")
+
+		// If empty, check candidates
+		if len(foundFiles) == 0 {
+			for _, key := range candidates {
+				if files := extractFiles(key); len(files) > 0 {
+					log.Printf("[Ollama] Fixing malformed argument key: '%s' -> 'artifact_names'", key)
+					foundFiles = files
+					break
+				}
+			}
+		}
+
+		// If we found something, force it into the correct key
+		if len(foundFiles) > 0 {
+			args["artifact_names"] = foundFiles
 		}
 
 		parts = append(parts, &genai.Part{
